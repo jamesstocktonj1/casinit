@@ -1,12 +1,10 @@
 name: Unit Test Job
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+  push:
   workflow_dispatch:
 
 jobs:
