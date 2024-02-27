@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # build container
-FROM golang:1.21 AS builder
+FROM golang:1.22 AS builder
 
 WORKDIR /app
 
