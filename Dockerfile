@@ -1,14 +1,22 @@
-# Use the official Golang image as the base image
-FROM golang:latest
+# syntax=docker/dockerfile:1
 
-# Set the working directory inside the container
+# build container
+FROM golang:1.21 AS builder
+
 WORKDIR /app
 
-# Copy the source code into the container
-COPY . .
+COPY . ./
+RUN go mod download
 
-# Build the Go application
-RUN go build -o casinit cmd/casinit/main.go
+ARG CGO_ENABLED=0
+RUN go build -ldflags="-s -w" -o ./casinit cmd/casinit/main.go
 
-# Set the entry point for the container
+
+# run container
+FROM scratch
+
+WORKDIR /app
+
+COPY --from=builder /app/casinit ./casinit
+
 ENTRYPOINT ["./casinit"]
