@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  cass:
+    image: cassandra:latest
+    container_name: cass
+    ports:
+      - "9042:9042"
+
+  casinit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: casinit
+    depends_on:
+      - cass
+    environment:
+      - CASSANDRA_HOST=cass
+      - STARTUP_TIMEOUT=100
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile_test
+    container_name: test
+    depends_on:
+      casinit:
+        condition: service_completed_successfully
+    environment:
+      - CASSANDRA_HOST=cass
